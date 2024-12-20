@@ -95,5 +95,66 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// DOM Element for description
+const descriptionElement = document.getElementById('description');
+
+// Function to update the description position
+function updateDescription() {
+    // Project the computer model's position to screen coordinates
+    const vector = new THREE.Vector3(0, 0.5, 0); // Adjust this to the model's center position
+    vector.project(camera);
+
+    // Convert normalized device coordinates to screen space
+    const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
+    const y = (-vector.y * 0.5 + 0.5) * window.innerHeight;
+
+    // Update the description element's position
+    descriptionElement.style.left = `${x}px`;
+    descriptionElement.style.top = `${y}px`;
+    descriptionElement.style.display = 'block';
+}
+
+// Show the description once the model is loaded
+gltfLoader.load(
+    '/models/computer/scene.gltf',
+    (gltf) => {
+        const computer = gltf.scene;
+        computer.scale.set(1.5, 1.5, 1.5);
+        computer.position.set(0, -1, 0);
+        computer.rotation.y = THREE.MathUtils.degToRad(-50);
+        scene.add(computer);
+
+        orbitControls.target.set(0, 0.5, 0);
+        orbitControls.update();
+
+        renderer.render(scene, camera);
+
+        // Update description after model is added
+        updateDescription();
+    }
+);
+
+// Update description on each frame
+const animate = function () {
+    requestAnimationFrame(animate);
+
+    orbitControls.update();
+    renderer.render(scene, camera);
+
+    // Keep the description aligned with the model
+    updateDescription();
+};
+
+animate();
+
+// Update description on window resize
+window.addEventListener('resize', () => {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    updateDescription();
+});
+
+
 // git config --global user.name "Kian"
 // git config --global user.email "kians3ra@gmail.com"
