@@ -58,7 +58,7 @@ const sphere = new THREE.Mesh(
 );
 sphere.position.x = 1.5;
 sphere.position.y = 3.5;
-scene.add(sphere)
+// scene.add(sphere)
 
 // Temporary Computer Model (from SketchFab ni)
 gltfLoader.load(
